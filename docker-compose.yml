@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  nginx-manager:
+    image: jonasxpx/nginx-alpine-load-balance:1
+    volumes:
+      - nginx:/etc/nginx/
+    network:
+      - front-end
+    deploy:
+      restart_policy:
+        condition: on-failure
+      placement:
+        contraints: 
+          "node.role == manager"
+  nginx-slave:
+    image: jonasxpx/nginx-alpine-slave:1
+    deploy:
+      mode: replicated
+      replicas: 3
+      restart_policy:
+        condition: on-failure
